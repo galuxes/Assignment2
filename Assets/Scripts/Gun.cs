@@ -5,44 +5,29 @@ using UnityEngine.InputSystem;
 
 public class Gun : MonoBehaviour
 {
+
+    [SerializeField] private List<GameObject> projectiles;
+    [SerializeField] private Transform firePoint, rotatePoint;
+    [SerializeField] private float bulletSpeed;
+    private int _currWeapon = 0;
+    
     /// <summary>
     /// The direction of the initial velocity of the fired projectile. That is,
     /// this is the direction the gun is aiming in.
     /// </summary>
-    public Vector3 FireDirection
-    {
-        get
-        {
-            // TODO: YOUR CODE HERE
-            return Vector3.zero;
-        }
-    }
+    public Vector3 FireDirection => firePoint.up;
 
     /// <summary>
     /// The position in world space where a projectile will be spawned when
     /// Fire() is called.
     /// </summary>
-    public Vector3 SpawnPosition
-    {
-        get
-        {
-            // TODO: YOUR CODE HERE
-            return Vector3.zero;
-        }
-    }
+    public Vector3 SpawnPosition => firePoint.position;
 
     /// <summary>
     /// The currently selected weapon object, an instance of which will be
     /// created when Fire() is called.
     /// </summary>
-    public GameObject CurrentWeapon
-    {
-        get
-        {
-            // TODO: YOUR CODE HERE
-            return null;
-        }
-    }
+    public GameObject CurrentWeapon => projectiles[_currWeapon];
 
     /// <summary>
     /// Spawns the currently active projectile, firing it in the direction of
@@ -51,8 +36,9 @@ public class Gun : MonoBehaviour
     /// <returns>The newly created GameObject.</returns>
     public GameObject Fire()
     {
-        // TODO: YOUR CODE HERE
-        return null;
+        var obj = Instantiate(CurrentWeapon, SpawnPosition, Quaternion.identity);
+        obj.GetComponent<Particle2D>().velocity = FireDirection * bulletSpeed;
+        return obj;
     }
 
     /// <summary>
@@ -63,11 +49,32 @@ public class Gun : MonoBehaviour
     /// </summary>
     public void CycleNextWeapon()
     {
-        // TODO: YOUR CODE HERE
+        _currWeapon++;
+        if (_currWeapon >= projectiles.Count)
+        {
+            _currWeapon = 0;
+        }
     }
 
     void Update()
     {
-        // TODO: YOUR CODE HERE (handle all input in Update, not FixedUpdate!)
+        Keyboard keyboard = Keyboard.current;
+
+        if (keyboard.enterKey.wasPressedThisFrame)
+        {
+            Fire();
+        }
+        if (keyboard.wKey.wasPressedThisFrame)
+        {
+            CycleNextWeapon();
+        }
+        if (keyboard.digit1Key.isPressed)
+        {
+            transform.RotateAround(rotatePoint.position, Vector3.forward, 0.5f);
+        }
+        if (keyboard.digit2Key.isPressed)
+        {
+            transform.RotateAround(rotatePoint.position, Vector3.back, 0.5f);
+        }
     }
 }

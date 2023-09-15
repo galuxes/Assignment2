@@ -101,5 +101,5 @@ MonoBehaviour:
   velocity: {x: 0, y: 0}
   acceleration: {x: 0, y: 0}
   accumulatedForces: {x: 0, y: 0}
-  accelerationDueToGravity: {x: 0, y: 0}
-  dampingConstant: 1
+  accelerationDueToGravity: {x: 0, y: -9.8}
+  damping: 1
